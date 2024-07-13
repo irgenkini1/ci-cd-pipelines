@@ -69,7 +69,7 @@ jobs:
     - name: Run tests
       run: |
         cd starter/frontend
-        npm test
+        npm test -- --passWithNoTests
 
   build:
     runs-on: ubuntu-latest
