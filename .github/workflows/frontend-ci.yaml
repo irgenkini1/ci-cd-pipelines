@@ -33,6 +33,10 @@ jobs:
         cd starter/frontend
         npm install
 
+    - name: Install prettier
+      run: |
+        npm install prettier --save-dev
+
     - name: Run linting
       run: |
         cd starter/frontend
@@ -96,6 +100,5 @@ jobs:
     - name: Build application with Docker
       run: |
         cd starter/frontend
-        # Example command, replace with your actual Docker build command
+        # Replace with your actual Docker build command
         docker build -t my-app .
-
