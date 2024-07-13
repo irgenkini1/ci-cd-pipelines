@@ -4,7 +4,6 @@
 
 The frontend of our Movie Picture application is written in TypeScript and uses the React framework. This means that the codebase adheres to strict type checking and a component-based structure. 
 
-
 ## eslint
 
 This project uses eslint for code quality. It's important that all code adheres to the rules outlined in our `.eslintrc` file. The linter will automatically check your code for style issues, potential bugs, and enforce certain design principles. 
