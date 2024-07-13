@@ -1,82 +1,76 @@
-name: Frontend CI
-
+name: Frontend CI Not Mine
 on:
   pull_request:
     branches:
-      - main
+      - master
     paths:
-      - 'starter/frontend/**'
+      - 'frontend/**'
   workflow_dispatch:
-
+  
 env:
   REACT_APP_MOVIE_API_URL: http://localhost:5000
-
 jobs:
-  lint:
-    runs-on: ubuntu-latest
+  lint-frontend:
+    name: 'Lint Frontend'
+    runs-on: ubuntu-latest   
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: '18'
-
-      - name: Restore cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      
+          node-version: 18
       - name: Install dependencies
         run: npm install
         working-directory: starter/frontend
-
-      - name: Install prettier
-        run: |
-          npm install prettier --save-dev
-
-      - name: Run linting
-        run: 
-          npm run lint
+      - name: Run ESLint
+        run: npm run lint
         working-directory: starter/frontend
-
-  test:
-    runs-on: ubuntu-latest
+  test-frontend:
+    name: 'Test Frontend'
+    runs-on: ubuntu-latest 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/checkout@v3
+      - name: Set up Node.js 
+        uses: actions/setup-node@v3
         with:
-          node-version: '18'
-
+          node-version: 18
       - name: Install dependencies
-        run: npm install
+        run:  npm ci
         working-directory: starter/frontend
-
       - name: Run tests
-        run: npm test -- --passWithNoTests
+        run: CI=true npm test
         working-directory: starter/frontend
-
   build:
     runs-on: ubuntu-latest
-    needs: [lint, test]
+    needs: [lint-frontend, test-frontend]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/checkout@v3
+      - name: Build Docker image
+        run: docker build --build-arg REACT_APP_MOVIE_API_URL=${{ env.REACT_APP_MOVIE_API_URL }} --tag mp-frontend:latest frontend
+      - name: Run docker image
+        run: docker run --name mp-frontend -p 3000:3000 -d mp-frontend
+      - name: Review logs
+        run: docker logs mp-frontend
+  build_and_test1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Node.js 
+        uses: actions/setup-node@v3
         with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: npm install
-        working-directory: starter/frontend
-
-      - name: Build application with Docker
-        run: docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 --tag=mp-frontend:latest .
-        working-directory: starter/frontend
+          node-version: latest
+      - name: Print a message for main branch
+        if: github.ref == 'refs/heads/master'
+        run: echo "This is the main branch."
+      - name: Print a message for non-main branches
+        if: github.ref != 'refs/heads/master'
+        run: echo "This is not the main branch."
+      - name: Run tests
+        run: npm test
+      - name: Debug message
+        if: env.DEBUG == 'true'
+        run: echo "Debugging is enabled."
