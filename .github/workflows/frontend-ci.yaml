@@ -36,12 +36,12 @@ jobs:
     - name: Install prettier
       run: |
         npm install prettier --save-dev
+        npm install eslint-plugin-prettier@latest eslint-config-prettier@latest
 
     - name: Run linting
       run: |
         cd starter/frontend
-        npm install eslint-plugin-prettier@latest eslint-config-prettier@latest
-        npm run lint
+        npm run lint --if-present
 
   test:
     runs-on: ubuntu-latest
