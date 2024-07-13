@@ -40,6 +40,7 @@ jobs:
     - name: Run linting
       run: |
         cd starter/frontend
+        npm install eslint-plugin-prettier@latest eslint-config-prettier@latest
         npm run lint
 
   test:
