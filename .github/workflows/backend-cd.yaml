@@ -9,9 +9,9 @@ on:
   workflow_dispatch:
 
 env:
-  AWS_REGION: us-east-1
-  ECR_REPO_NAME: your-ecr-repo-name
-  EKS_CLUSTER_NAME: your-eks-cluster-name
+  AWS_REGION: 'us-east-1'
+  ECR_REPO_NAME: '241115661166.dkr.ecr.us-east-1.amazonaws.com/backend'
+  EKS_CLUSTER_NAME: 'cluster'
 
 jobs:
   lint:
